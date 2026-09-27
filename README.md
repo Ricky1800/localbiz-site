@@ -10,7 +10,7 @@ business — a plumber, salon, restaurant, contractor, or anything in between.
 
 ![localbiz-site — four theme presets, one config file](docs/images/presets-collage.png)
 
-[**Deploy to Vercel**](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FRicky1800%2Flocalbiz-site)
+[**Live demo**](https://localbiz-site-demo.vercel.app) (the example "Maple Street Plumbing" config) · [**Deploy to Vercel**](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FRicky1800%2Flocalbiz-site)
 
 ## The problem this solves
 
