@@ -208,6 +208,11 @@ feature list.
 See [`CONTRIBUTING.md`](./CONTRIBUTING.md). Bug reports and feature requests
 use the templates under `.github/ISSUE_TEMPLATE/`.
 
+## Authors
+
+- [@Ricky1800](https://github.com/Ricky1800)
+- [@orbitwebsites-cloud](https://github.com/orbitwebsites-cloud) ([OrbitBoyzz](https://orbitboyzz.me))
+
 ## License
 
 [MIT](./LICENSE) © 2026 Ricky1800
