@@ -1,11 +1,14 @@
 # localbiz-site
 
 [![CI](https://github.com/Ricky1800/localbiz-site/actions/workflows/ci.yml/badge.svg)](https://github.com/Ricky1800/localbiz-site/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/tag/Ricky1800/localbiz-site?label=release)](https://github.com/Ricky1800/localbiz-site/tags)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 A Next.js (App Router) + TypeScript (strict) + Tailwind CSS starter that turns
 **one typed config file** into a fast, SEO-ready website for a local
 business — a plumber, salon, restaurant, contractor, or anything in between.
+
+![localbiz-site — four theme presets, one config file](docs/images/presets-collage.png)
 
 [**Deploy to Vercel**](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FRicky1800%2Flocalbiz-site)
 
@@ -59,6 +62,24 @@ the config file *is* the CMS, and it's checked into git like everything else.
 - **Fast by default**: React Server Components everywhere except the three
   places that genuinely need client JS (the mobile nav toggle, the live hours
   widget, and the contact form).
+
+## Screenshots
+
+| Trades / Home Services | Salon & Beauty |
+|---|---|
+| ![Trades preset homepage hero](docs/images/hero-trades-home-services.png) | ![Salon preset homepage hero](docs/images/hero-salon-beauty.png) |
+
+| Restaurant & Cafe | Professional Services |
+|---|---|
+| ![Restaurant preset homepage hero](docs/images/hero-restaurant-cafe.png) | ![Professional services preset homepage hero](docs/images/hero-professional-services.png) |
+
+Mobile (390×844), Trades preset:
+
+<img src="docs/images/mobile-trades-home-services.png" alt="Trades preset homepage on mobile" width="260" />
+
+All four presets come from the same `business.config.ts` shape — only
+`theme.preset` (and the copy) changes. See the [`/design` panel](#live-design-panel---design)
+below for switching presets live.
 
 ## Tech stack
 
@@ -274,6 +295,8 @@ header/footer variant, and each section's enabled state + variant — with an
 instant preview at mobile/tablet/desktop widths, a live WCAG contrast
 report, and a **"Copy config"** button that renders the exact
 `theme`/`sections`/`layout` snippet to paste into `business.config.ts`.
+
+![The /design panel: live preset, color, and section editing](docs/images/design-panel.webp)
 
 This route is dev-only: `app/design/page.tsx` calls `notFound()` outside
 `NODE_ENV=development`, so it 404s in any production build/deployment (this
