@@ -1,15 +1,93 @@
 @import "tailwindcss";
 
-:root {
-  --brand-primary: #0f766e;
-  --brand-secondary: #0c4a6e;
-  --brand-accent: #f59e0b;
+/*
+ * Design-token layer.
+ *
+ * The `--t-*` custom properties below are set per-request as an inline
+ * style on <html> by `app/layout.tsx`, computed by `lib/theme/tokens.ts`'s
+ * `resolveTheme()` from the active preset + `business.config.ts` overrides.
+ * This file never hard-codes a brand color, font, radius, or shadow value —
+ * it only *maps* those already-resolved `--t-*` tokens onto Tailwind's own
+ * theme namespaces via `@theme inline`, so ordinary utility classes
+ * (`bg-primary`, `rounded-lg`, `shadow-md`, `text-3xl`, `font-heading`...)
+ * automatically render the active preset/brand without any component ever
+ * referencing a literal color or size.
+ *
+ * Fallback values (after each `var(--t-x, fallback)`) only apply before
+ * hydration in edge cases (e.g. this stylesheet loading before the inline
+ * <html style> is parsed) and match the "neutral" preset.
+ */
+@theme inline {
+  --color-bg: var(--t-bg, #fafafa);
+  --color-surface: var(--t-surface, #ffffff);
+  --color-surface-2: var(--t-surface-2, #f2f2f3);
+  --color-border: var(--t-border, #e2e2e4);
+  --color-fg: var(--t-fg, #18181b);
+  --color-fg-muted: var(--t-fg-muted, #52525b);
+
+  --color-primary: var(--t-primary, #3457a6);
+  --color-primary-foreground: var(--t-primary-foreground, #ffffff);
+  --color-secondary: var(--t-secondary, #1e3a5f);
+  --color-secondary-foreground: var(--t-secondary-foreground, #ffffff);
+  --color-accent: var(--t-accent, #f2a900);
+  --color-accent-foreground: var(--t-accent-foreground, #18181b);
+  --color-success: var(--t-success, #15803d);
+  --color-success-foreground: var(--t-success-foreground, #ffffff);
+  --color-warning: var(--t-warning, #b45309);
+  --color-warning-foreground: var(--t-warning-foreground, #ffffff);
+  --color-danger: var(--t-danger, #b91c1c);
+  --color-danger-foreground: var(--t-danger-foreground, #ffffff);
+
+  /* Overriding Tailwind's own radius/shadow/text/font namespaces means
+   * every existing `rounded-*` / `shadow-*` / `text-*` / `font-*` utility
+   * automatically follows the active preset — no component changes needed
+   * to re-theme those properties. */
+  --radius-sm: var(--t-radius-sm, 0.25rem);
+  --radius-md: var(--t-radius-md, 0.5rem);
+  --radius-lg: var(--t-radius-lg, 0.875rem);
+  --radius-xl: var(--t-radius-xl, 1.25rem);
+  --radius-full: var(--t-radius-full, 9999px);
+
+  --shadow-sm: var(--t-shadow-sm);
+  --shadow-md: var(--t-shadow-md);
+  --shadow-lg: var(--t-shadow-lg);
+  --shadow-xl: var(--t-shadow-xl);
+
+  --font-heading: var(--t-font-heading, var(--font-inter));
+  --font-body: var(--t-font-body, var(--font-inter));
+  --font-sans: var(--t-font-body, var(--font-inter));
+
+  --text-xs: var(--t-text-xs, 0.75rem);
+  --text-xs--line-height: var(--t-leading-xs, 1.6);
+  --text-sm: var(--t-text-sm, 0.875rem);
+  --text-sm--line-height: var(--t-leading-sm, 1.6);
+  --text-base: var(--t-text-base, 1rem);
+  --text-base--line-height: var(--t-leading-base, 1.6);
+  --text-lg: var(--t-text-lg, 1.125rem);
+  --text-lg--line-height: var(--t-leading-lg, 1.5);
+  --text-xl: var(--t-text-xl, 1.25rem);
+  --text-xl--line-height: var(--t-leading-xl, 1.5);
+  --text-2xl: var(--t-text-2xl, 1.5rem);
+  --text-2xl--line-height: var(--t-leading-2xl, 1.5);
+  --text-3xl: var(--t-text-3xl, 1.875rem);
+  --text-3xl--line-height: var(--t-leading-3xl, 1.25);
+  --text-4xl: var(--t-text-4xl, 2.25rem);
+  --text-4xl--line-height: var(--t-leading-4xl, 1.25);
+  --text-5xl: var(--t-text-5xl, 3rem);
+  --text-5xl--line-height: var(--t-leading-5xl, 1.1);
+  --text-6xl: var(--t-text-6xl, 3.75rem);
+  --text-6xl--line-height: var(--t-leading-6xl, 1.1);
+
+  --default-transition-duration: var(--t-motion-base, 200ms);
+  --default-transition-timing-function: var(--t-motion-easing, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
-@theme inline {
-  --color-brand-primary: var(--brand-primary);
-  --color-brand-secondary: var(--brand-secondary);
-  --color-brand-accent: var(--brand-accent);
+/* Section rhythm tokens (not part of Tailwind's own namespace — consumed
+ * directly via the `.section-y` utility below, used by every section
+ * component instead of a hard-coded `py-16`). */
+.section-y {
+  padding-top: var(--t-space-section-y, 4rem);
+  padding-bottom: var(--t-space-section-y, 4rem);
 }
 
 html {
@@ -31,13 +109,14 @@ html {
 }
 
 body {
-  background-color: #ffffff;
-  color: #111827;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-body);
 }
 
 /* Visible, high-contrast focus ring for keyboard navigation, everywhere. */
 :focus-visible {
-  outline: 3px solid var(--brand-accent);
+  outline: 3px solid var(--color-accent);
   outline-offset: 2px;
   border-radius: 2px;
 }
@@ -47,10 +126,10 @@ body {
   left: -9999px;
   top: 0;
   z-index: 100;
-  background: #ffffff;
-  color: #111827;
+  background: var(--color-surface);
+  color: var(--color-fg);
   padding: 0.75rem 1rem;
-  border-radius: 0 0 0.5rem 0;
+  border-radius: 0 0 var(--radius-md) 0;
   font-weight: 600;
 }
 

@@ -174,10 +174,13 @@ const rawConfig = {
   // entirely and show phone/email only.
   contactFormWebhookUrl: undefined,
 
-  brandColors: {
-    primary: "#0f766e", // teal-700
-    secondary: "#0c4a6e", // sky-900
-    accent: "#f59e0b", // amber-500
+  // The design system: pick a preset tuned to your vertical, then override
+  // only what you want to change. See README.md's "Design system" section
+  // for the full preset gallery, token reference, and the live `/design`
+  // panel (dev only) that lets you preview combinations and copy the exact
+  // snippet to paste here.
+  theme: {
+    preset: "trades-home-services",
   },
   logoPath: "/logo.svg",
   siteUrl: "https://www.maplestreetplumbing.example",

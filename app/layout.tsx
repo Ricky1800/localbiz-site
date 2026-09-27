@@ -6,6 +6,8 @@ import { JsonLd } from "@/components/JsonLd";
 import { SkipLink } from "@/components/SkipLink";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { allFontVariableClassNames } from "@/lib/theme/fonts";
+import { resolveTheme, themeToCssVariables } from "@/lib/theme/tokens";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -35,18 +37,11 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const brandStyle = {
-    "--brand-primary": businessConfig.brandColors.primary,
-    ...(businessConfig.brandColors.secondary
-      ? { "--brand-secondary": businessConfig.brandColors.secondary }
-      : {}),
-    ...(businessConfig.brandColors.accent
-      ? { "--brand-accent": businessConfig.brandColors.accent }
-      : {}),
-  } as CSSProperties;
+  const resolvedTheme = resolveTheme(businessConfig.theme);
+  const themeStyle = themeToCssVariables(resolvedTheme) as CSSProperties;
 
   return (
-    <html lang="en" style={brandStyle}>
+    <html lang="en" style={themeStyle} className={allFontVariableClassNames()}>
       <body>
         <JsonLd data={buildLocalBusinessJsonLd(businessConfig)} />
         <SkipLink />

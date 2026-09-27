@@ -1,11 +1,12 @@
 import { z } from "zod";
 import { BUSINESS_TYPE_KEYS } from "./business-types";
 import { DAY_KEYS, type DayKey } from "./hours";
+import { themeConfigSchema } from "./theme/schema";
+import { resolveTheme } from "./theme/tokens";
 
 const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const HEX_COLOR_REGEX = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
 const timeStringSchema = z
   .string()
@@ -90,12 +91,6 @@ const geoSchema = z.object({
   lng: z.number().min(-180).max(180),
 });
 
-const brandColorsSchema = z.object({
-  primary: z.string().regex(HEX_COLOR_REGEX, "must be a hex color, e.g. \"#0f766e\""),
-  secondary: z.string().regex(HEX_COLOR_REGEX).optional(),
-  accent: z.string().regex(HEX_COLOR_REGEX).optional(),
-});
-
 export const businessConfigSchema = z
   .object({
     name: z.string().min(1),
@@ -116,7 +111,7 @@ export const businessConfigSchema = z
     social: socialLinksSchema.default({}),
     bookingUrl: z.url().optional(),
     contactFormWebhookUrl: z.url().optional(),
-    brandColors: brandColorsSchema,
+    theme: themeConfigSchema,
     logoPath: z.string().min(1),
     siteUrl: z.url(),
   })
@@ -154,6 +149,21 @@ export const businessConfigSchema = z
       }
       seenDates.add(override.date);
     });
+
+    // Resolving the theme also runs the WCAG AA contrast checks for every
+    // color-role pair (see `lib/theme/tokens.ts`); a pairing that can't be
+    // auto-corrected throws, which we surface here as a normal validation
+    // issue so it fails the build with the same readable format as any
+    // other config mistake.
+    try {
+      resolveTheme(cfg.theme);
+    } catch (error) {
+      ctx.addIssue({
+        code: "custom",
+        message: error instanceof Error ? error.message : String(error),
+        path: ["theme"],
+      });
+    }
   });
 
 export type BusinessConfig = z.infer<typeof businessConfigSchema>;

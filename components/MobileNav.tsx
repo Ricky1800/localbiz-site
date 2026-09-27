@@ -24,7 +24,7 @@ export function MobileNav({ links }: { links: NavLink[] }) {
         aria-expanded={open}
         aria-controls="mobile-nav-menu"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center justify-center rounded-md p-2 text-gray-700 hover:bg-gray-100"
+        className="inline-flex items-center justify-center rounded-md p-2 text-fg transition-colors hover:bg-surface-2"
       >
         <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
         <svg
@@ -45,14 +45,14 @@ export function MobileNav({ links }: { links: NavLink[] }) {
       </button>
 
       {open ? (
-        <nav id="mobile-nav-menu" aria-label="Mobile" className="absolute inset-x-0 top-full border-t border-gray-200 bg-white shadow-md">
+        <nav id="mobile-nav-menu" aria-label="Mobile" className="absolute inset-x-0 top-full border-t border-border bg-surface shadow-md">
           <ul className="flex flex-col p-4">
             {links.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-md px-3 py-3 text-base font-medium text-gray-800 hover:bg-gray-50"
+                  className="block rounded-md px-3 py-3 text-base font-medium text-fg transition-colors hover:bg-surface-2"
                 >
                   {link.label}
                 </Link>

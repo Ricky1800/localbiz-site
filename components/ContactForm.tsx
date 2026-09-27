@@ -38,7 +38,7 @@ export function ContactForm({ webhookUrl }: { webhookUrl: string }) {
 
   if (state === "success") {
     return (
-      <p role="status" className="rounded-md bg-green-50 p-4 text-green-800">
+      <p role="status" className="rounded-md bg-success/10 p-4 text-success">
         Thanks — your message has been sent. We&apos;ll get back to you soon.
       </p>
     );
@@ -47,7 +47,7 @@ export function ContactForm({ webhookUrl }: { webhookUrl: string }) {
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       <div>
-        <label htmlFor={`${formId}-name`} className="block text-sm font-medium text-gray-700">
+        <label htmlFor={`${formId}-name`} className="block text-sm font-medium text-fg">
           Name
         </label>
         <input
@@ -55,12 +55,12 @@ export function ContactForm({ webhookUrl }: { webhookUrl: string }) {
           name="name"
           type="text"
           required
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-brand-primary"
+          className="mt-1 block w-full rounded-md border border-border bg-surface px-3 py-2 text-fg shadow-sm transition-colors focus:border-primary"
         />
       </div>
 
       <div>
-        <label htmlFor={`${formId}-email`} className="block text-sm font-medium text-gray-700">
+        <label htmlFor={`${formId}-email`} className="block text-sm font-medium text-fg">
           Email
         </label>
         <input
@@ -68,24 +68,24 @@ export function ContactForm({ webhookUrl }: { webhookUrl: string }) {
           name="email"
           type="email"
           required
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-brand-primary"
+          className="mt-1 block w-full rounded-md border border-border bg-surface px-3 py-2 text-fg shadow-sm transition-colors focus:border-primary"
         />
       </div>
 
       <div>
-        <label htmlFor={`${formId}-phone`} className="block text-sm font-medium text-gray-700">
+        <label htmlFor={`${formId}-phone`} className="block text-sm font-medium text-fg">
           Phone (optional)
         </label>
         <input
           id={`${formId}-phone`}
           name="phone"
           type="tel"
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-brand-primary"
+          className="mt-1 block w-full rounded-md border border-border bg-surface px-3 py-2 text-fg shadow-sm transition-colors focus:border-primary"
         />
       </div>
 
       <div>
-        <label htmlFor={`${formId}-message`} className="block text-sm font-medium text-gray-700">
+        <label htmlFor={`${formId}-message`} className="block text-sm font-medium text-fg">
           Message
         </label>
         <textarea
@@ -93,12 +93,12 @@ export function ContactForm({ webhookUrl }: { webhookUrl: string }) {
           name="message"
           rows={4}
           required
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-brand-primary"
+          className="mt-1 block w-full rounded-md border border-border bg-surface px-3 py-2 text-fg shadow-sm transition-colors focus:border-primary"
         />
       </div>
 
       {state === "error" ? (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm text-danger">
           Something went wrong sending your message. Please try again, or call us directly.
         </p>
       ) : null}
@@ -106,7 +106,7 @@ export function ContactForm({ webhookUrl }: { webhookUrl: string }) {
       <button
         type="submit"
         disabled={state === "submitting"}
-        className="rounded-md bg-brand-primary px-6 py-3 text-base font-semibold text-white shadow-sm hover:opacity-90 disabled:opacity-60"
+        className="rounded-md bg-primary px-6 py-3 text-base font-semibold text-primary-foreground shadow-sm transition-colors hover:opacity-90 disabled:opacity-60"
       >
         {state === "submitting" ? "Sending…" : "Send message"}
       </button>

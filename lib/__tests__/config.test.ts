@@ -30,7 +30,7 @@ function baseValidConfig() {
       { slug: "test-service", name: "Test Service", description: "Does a thing." },
     ],
     serviceAreas: ["Testville"],
-    brandColors: { primary: "#123456" },
+    theme: { preset: "neutral" },
     logoPath: "/logo.svg",
     siteUrl: "https://example.com",
   };
@@ -105,6 +105,22 @@ describe("businessConfigSchema", () => {
 
   it("parseBusinessConfig throws a readable error on invalid input", () => {
     expect(() => parseBusinessConfig({})).toThrow(/Invalid business.config.ts/);
+  });
+
+  it("defaults theme to the neutral preset when omitted", () => {
+    const config = baseValidConfig() as Record<string, unknown>;
+    delete config.theme;
+    const parsed = businessConfigSchema.parse(config);
+    expect(parsed.theme.preset).toBe("neutral");
+  });
+
+  it("fails the build with a clear message for an inaccessible theme color", () => {
+    const config = baseValidConfig();
+    (config as Record<string, unknown>).theme = {
+      preset: "neutral",
+      accentColor: "#fde047",
+    };
+    expect(() => parseBusinessConfig(config)).toThrow(/theme/i);
   });
 });
 

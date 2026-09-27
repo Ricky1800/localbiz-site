@@ -42,12 +42,12 @@ export function HoursWidget({
       // showing real data behind a loading state.
       suppressHydrationWarning
       className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold ${
-        status.isOpen ? "bg-green-100 text-green-800" : "bg-gray-200 text-gray-700"
+        status.isOpen ? "bg-success/10 text-success" : "bg-surface-2 text-fg-muted"
       }`}
     >
       <span
         aria-hidden="true"
-        className={`h-2 w-2 rounded-full ${status.isOpen ? "bg-green-600" : "bg-gray-500"}`}
+        className={`h-2 w-2 rounded-full ${status.isOpen ? "bg-success" : "bg-fg-muted"}`}
       />
       {status.label}
     </p>
