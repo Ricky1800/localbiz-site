@@ -26,6 +26,10 @@ the config file *is* the CMS, and it's checked into git like everything else.
 
 ## Live features
 
+- **A real design system, not a single template.** 8 vertical-tuned theme
+  presets, an OKLCH palette generator with automatic WCAG AA contrast
+  correction, 2 variants per homepage section, and a live `/design` panel
+  (dev only) to tune and copy a config snippet — see "Design system" below.
 - **One config file.** `business.config.ts` is validated against a
   [zod](https://zod.dev) schema at build time (`lib/config.ts`) — typos and
   missing fields fail fast with a readable error instead of a broken page.
@@ -58,7 +62,8 @@ the config file *is* the CMS, and it's checked into git like everything else.
 
 ## Tech stack
 
-Next.js (App Router) · TypeScript (strict) · Tailwind CSS · zod · Vitest
+Next.js (App Router) · TypeScript (strict) · Tailwind CSS · zod · Vitest ·
+Playwright + axe-core · Lighthouse CI
 
 ## Quickstart
 
@@ -95,8 +100,10 @@ Street Plumbing** (a fictional business in Princeton, NJ with a placeholder
    optional.
 6. **Set `serviceAreas`, `testimonials`, and `faq`** to your own towns,
    reviews, and questions.
-7. **Set `brandColors.primary`** (and optionally `secondary`/`accent`) to hex
-   colors matching your brand — the whole site re-themes from these.
+7. **Pick a `theme.preset`** matching your vertical (or leave it at
+   `"neutral"`), optionally overriding `brandColor` with your own brand hex —
+   the whole site re-themes from it. See "Design system" below, or tune it
+   live at `/design` and use its "Copy config" button.
 8. **Replace `public/logo.svg`** with your own logo, and update `logoPath` if
    you rename the file.
 9. **Set `siteUrl`** to your real domain once you have one (it's used to
@@ -148,9 +155,157 @@ All fields live in `business.config.ts` and are enforced by the zod schema in
 | `social` | object | — | Any of `facebook`, `instagram`, `google`, `yelp`, `x`, `tiktok`, `linkedin` — full URLs. |
 | `bookingUrl` | `string` | — | Calendly/Cal.com link; shows a "Book online" button when set. |
 | `contactFormWebhookUrl` | `string` | — | See above; hides the contact form when unset. |
-| `brandColors` | object | ✅ | `{ primary, secondary?, accent? }`, hex colors. |
+| `theme` | object | — | `{ preset, brandColor?, secondaryColor?, accentColor?, fonts?, radius?, shadow?, motion?, density? }`; defaults to `{ preset: "neutral" }`. See "Design system" below. |
+| `sections` | array | — | `{ type, variant }[]` — which homepage sections appear, in what order, and which variant each renders. Defaults to a sensible order (see "Design system"). |
+| `layout` | object | — | `{ header: { variant }, footer: { variant } }`. Defaults to `{ header: { variant: "standard" }, footer: { variant: "simple" } }`. |
+| `images` | object | — | `{ hero? }` — optional image paths (under `public/`) for section variants that support one (e.g. the hero's `split-image` variant). Unset variants fall back to a token-driven placeholder. |
 | `logoPath` | `string` | ✅ | Path under `public/`, e.g. `"/logo.svg"`. |
 | `siteUrl` | `string` | ✅ | Full production URL, e.g. `"https://www.example.com"`. |
+
+## Design system
+
+`localbiz-site` isn't a single fixed template — it's a small design system:
+a token layer, a set of vertical-tuned presets, and 2 professionally
+designed variants per homepage section, all driven by `business.config.ts`
+and previewable live in a dev-only panel.
+
+### Presets
+
+Set `theme.preset` to one of the 8 presets below. Each has its own brand
+color, Google Fonts pairing (self-hosted via `next/font`), corner-radius
+style, shadow style, motion feel, and spacing density.
+
+| Preset | Tuned for | Brand color | Headings / body | Personality |
+|---|---|---|---|---|
+| `neutral` | Any vertical (default) | `#3457a6` | Inter / Inter | Calm, single-family, safe starting point |
+| `salon-beauty` | Hair, nail, day spa | `#b8336a` | Playfair Display / Poppins | Elegant serif, pill controls, generous whitespace |
+| `trades-home-services` | Plumbers, electricians, HVAC, contractors, roofers, landscapers, movers | `#0f4c81` | Barlow Condensed / Work Sans | Bold condensed, sharp corners, flat shadows |
+| `restaurant-cafe` | Restaurants, cafes, bakeries, bars | `#c2410c` | Fraunces / Nunito Sans | Warm display serif, soft rounded cards |
+| `clinic-wellness` | Dentists, physicians, vets, gyms | `#0d9488` | Manrope / IBM Plex Sans | Calm, spacious, legible, rounded |
+| `auto-repair` | Auto repair shops | `#b91c1c` | Oswald / Rubik | Industrial condensed, flat, compact |
+| `professional-services` | Law firms, accountants, real estate | `#3730a3` | Merriweather / Public Sans | Trustworthy serif over a clean grotesk |
+| `boutique-retail` | Florists, pet stores, dry cleaners | `#4d7c0f` | DM Serif Display / DM Sans | Charming display serif, generous rounded cards |
+
+```ts
+theme: {
+  preset: "restaurant-cafe",
+  // Every field below is optional — override only what you want to change
+  // from the preset. Omit `theme` entirely to use `{ preset: "neutral" }`.
+  brandColor: "#8b2f14",      // re-tint the preset with your own brand color
+  secondaryColor: "#2a1b12",
+  accentColor: "#d8a13a",
+  fonts: { heading: "Fraunces", body: "Work Sans" },
+  radius: "lg",               // "none" | "sm" | "md" | "lg" | "pill"
+  shadow: "soft",             // "flat" | "soft" | "elevated"
+  motion: "standard",         // "subtle" | "standard" | "energetic"
+  density: "comfortable",     // "compact" | "comfortable" | "spacious"
+},
+```
+
+### Tokens
+
+Every color, radius, shadow, type size, and motion duration on the site is a
+CSS custom property resolved once per request by `lib/theme/tokens.ts`'s
+`resolveTheme()` — no component hard-codes a hex color, a `px` radius, or a
+Tailwind gray shade. Those `--t-*` variables are set as an inline style on
+`<html>` (`app/layout.tsx`) and mapped onto Tailwind v4's own theme
+namespaces in `app/globals.css`'s `@theme inline` block:
+
+- **Color roles**: `bg` / `surface` / `surface-2` / `border` / `fg` /
+  `fg-muted`, plus `primary` / `secondary` / `accent` (each with a
+  `-foreground` pair) and semantic `success` / `warning` / `danger`. Used as
+  `bg-primary`, `text-fg-muted`, `border-border`, etc.
+- **Radius & shadow**: override Tailwind's own `--radius-*` / `--shadow-*`
+  scale, so existing `rounded-lg` / `shadow-md` utilities automatically
+  follow the active preset.
+- **Type scale**: a fluid, modular scale (`lib/theme/styles.ts`'s
+  `buildTypeScale()`) built from each preset's ratio (1.2–1.333), overriding
+  Tailwind's `--text-*` sizes the same way.
+- **Motion**: `--t-motion-fast/base/slow` (150–320ms, chosen per preset)
+  drive `transition-colors` etc. via Tailwind's `--default-transition-*`.
+- **Fonts**: `font-heading` / `font-body` utility classes, backed by
+  `next/font/google`-hosted variables (`lib/theme/fonts.ts`).
+
+### Palette generator & accessibility
+
+`lib/theme/color.ts` converts your one `brandColor` hex into
+[OKLCH](https://oklch.com), then `lib/theme/palette.ts`'s `generateScale()`
+derives a full 11-step (50–950) tonal scale by holding hue fixed and varying
+lightness — with gamut-aware chroma reduction so saturated colors don't
+silently shift hue when clamped back into sRGB.
+
+Every color-role pairing that renders as text-on-background (body text,
+button text, muted text, the accent-colored star rating, ...) is checked
+against **WCAG AA** (4.5:1, or 3:1 for large/icon-scale text) by
+`resolveTheme()`. A failing pair is nudged (in OKLCH lightness, preserving
+hue) until it passes; if a pairing genuinely can't be corrected within a
+sane range — e.g. a pastel accent color used as icon/text color — **the
+build fails** with a specific error naming the pair and the ratio achieved,
+rather than silently shipping inaccessible text. See
+`lib/theme/__tests__/color.test.ts`, `palette.test.ts`, and `tokens.test.ts`
+for the unit tests covering this (including the failure case).
+
+### Section variants
+
+Each homepage section kind has 2 variants; choose per-section in
+`business.config.ts`'s `sections` array (order = render order):
+
+| Section | Variants |
+|---|---|
+| `header` (in `layout.header`) | `standard` (logo · nav · call button in one row) · `centered` (logo centered, nav below) |
+| `hero` | `split-image` (text + photo or a token-driven gradient placeholder) · `centered` (no image, editorial) |
+| `services` | `grid-cards` · `list-rows` (numbered menu-style rows) |
+| `testimonials` | `grid-cards` · `spotlight` (one large quote + a scroll-snap strip) |
+| `serviceArea` | `pill-cloud` · `list-columns` (multi-column with a pin icon) |
+| `hoursContact` | `card` (full weekly table + contact) · `banner` (compact single row) |
+| `ctaBand` | `simple` (quiet tinted band) · `gradient` (bold brand-gradient band) |
+| `faq` | `accordion` (zero-JS `<details>`) · `two-column` (always-expanded cards) |
+| `footer` (in `layout.footer`) | `simple` (3-column) · `columns` (4-column, + services + hours) |
+
+All variants are responsive, keyboard-accessible, and built entirely on the
+token layer above. `hero`'s `split-image` variant uses `next/image` when
+`images.hero` is set, and a tasteful gradient placeholder otherwise.
+
+### Live design panel — `/design`
+
+Run `npm run dev` and open `http://localhost:3000/design` for a live editor:
+switch preset, brand color, fonts, radius/shadow/motion/density,
+header/footer variant, and each section's enabled state + variant — with an
+instant preview at mobile/tablet/desktop widths, a live WCAG contrast
+report, and a **"Copy config"** button that renders the exact
+`theme`/`sections`/`layout` snippet to paste into `business.config.ts`.
+
+This route is dev-only: `app/design/page.tsx` calls `notFound()` outside
+`NODE_ENV=development`, so it 404s in any production build/deployment (this
+is verified by `tests/e2e/design-panel.spec.ts`, not just asserted).
+
+### Quality gates
+
+- **Accessibility matrix** (`tests/e2e/a11y.spec.ts`): [Playwright](https://playwright.dev)
+  + [`@axe-core/playwright`](https://github.com/dequelabs/axe-core-npm) run
+  against `/`, `/contact`, and a `/services/[slug]` page, **for every one of
+  the 8 presets** (an `e2e-preset` cookie, honored only when the test server
+  is built with `ALLOW_THEME_OVERRIDE=1`, switches presets per-request
+  without rebuilding 8 times — see `lib/theme/e2e-override.ts`). Fails on
+  any `serious`/`critical` violation.
+- **Visual smoke** (`tests/e2e/screenshots.spec.ts`): a full-page screenshot
+  per preset, attached to the HTML report — a "does it actually render, with
+  the right brand color applied" smoke check, not pixel-diff regression
+  (which would be brittle with no committed OS-specific baseline images).
+- **`/design` 404 check** (`tests/e2e/design-panel.spec.ts`): confirms the
+  panel really 404s in a production build.
+- **Lighthouse CI** (`lighthouserc.cjs`): budgets of performance ≥ 90,
+  accessibility ≥ 95, SEO ≥ 95, best-practices ≥ 95 against the *default*
+  production build (no override) — `npm run lhci`.
+
+```bash
+npx playwright install --with-deps chromium   # once, before first run
+npm run test:e2e     # Playwright: a11y matrix + visual smoke + /design 404
+npm run lhci         # Lighthouse CI budgets
+```
+
+All of the above run in CI (`.github/workflows/ci.yml`'s `e2e` and
+`lighthouse` jobs), including installing Playwright's browsers.
 
 ## How SEO works
 
@@ -173,16 +328,33 @@ All fields live in `business.config.ts` and are enforced by the zod schema in
 
 ## Testing
 
-Pure logic — the hours engine, the config schema, and the JSON-LD builders —
-lives in `lib/` and is unit tested with [Vitest](https://vitest.dev) in
-`lib/__tests__/`. These tests cover timezones, overnight ranges, closed days,
-holiday overrides, and DST transitions without needing a browser or a
-running server.
+- **Unit tests** ([Vitest](https://vitest.dev), `lib/**/*.test.ts`): pure
+  logic — the hours engine, the config schema, and the JSON-LD builders in
+  `lib/__tests__/` (timezones, overnight ranges, closed days, holiday
+  overrides, DST transitions), plus the design system's color math, palette
+  generator, contrast checker, and section-config schema in
+  `lib/theme/__tests__/` and `lib/sections/__tests__/`.
+- **End-to-end tests** ([Playwright](https://playwright.dev) +
+  [`@axe-core/playwright`](https://github.com/dequelabs/axe-core-npm),
+  `tests/e2e/`): an accessibility matrix across every preset, visual smoke
+  screenshots, and the `/design` dev-only-404 check — see "Design system" →
+  "Quality gates" above for details.
+- **Lighthouse CI** (`lighthouserc.cjs`): performance/accessibility/SEO/
+  best-practices budgets against the production build.
 
 ```bash
-npm test          # run once
-npm run test:watch
+npm test                                      # unit tests, once
+npm run test:watch                            # unit tests, watch mode
+
+npx playwright install --with-deps chromium   # once, before first e2e run
+npm run test:e2e                              # Playwright suite
+npm run lhci                                  # Lighthouse CI budgets
 ```
+
+If Playwright's browsers can't be installed in your environment (no network
+access, sandboxed CI, etc.), say so rather than silently skipping — `npm run
+test:e2e` will fail clearly at the `npx playwright install` step, not
+partway through a test run.
 
 ## Scripts
 
@@ -194,6 +366,9 @@ npm run test:watch
 | `npm run lint` | ESLint (Next.js core-web-vitals + TypeScript rules). |
 | `npm run typecheck` | `tsc --noEmit`. |
 | `npm test` | Run the Vitest suite once. |
+| `npm run test:e2e` | Run the Playwright suite (a11y matrix, visual smoke, `/design` 404 check). |
+| `npm run test:e2e:ui` | Same, with Playwright's interactive UI runner. |
+| `npm run lhci` | Run Lighthouse CI against a production build and assert budgets. |
 
 ## Roadmap
 

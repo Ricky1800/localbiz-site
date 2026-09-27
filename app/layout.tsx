@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { SkipLink } from "@/components/SkipLink";
 import { Header, Footer } from "@/components/sections";
 import { allFontVariableClassNames } from "@/lib/theme/fonts";
+import { getE2EPresetOverride } from "@/lib/theme/e2e-override";
 import { resolveTheme, themeToCssVariables } from "@/lib/theme/tokens";
 import "./globals.css";
 
@@ -35,8 +36,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const resolvedTheme = resolveTheme(businessConfig.theme);
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const presetOverride = await getE2EPresetOverride();
+  const themeConfig = presetOverride ? { preset: presetOverride } : businessConfig.theme;
+  const resolvedTheme = resolveTheme(themeConfig);
   const themeStyle = themeToCssVariables(resolvedTheme) as CSSProperties;
 
   return (

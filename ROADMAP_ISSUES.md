@@ -8,31 +8,10 @@ issue.
 
 ---
 
-## 1. Add a Playwright accessibility + visual smoke test
-
-**Labels:** `good first issue`, `testing`, `accessibility`
-
-**Body:**
-We have unit tests for pure logic (`lib/`) but no test that actually renders
-a page. Add a Playwright test suite that:
-- Boots the app (`next build && next start`, or `next dev` in CI) against
-  the example `business.config.ts`.
-- Visits `/`, `/contact`, and one `/services/[slug]` page.
-- Runs [`axe-core`](https://github.com/dequelabs/axe-core) (via
-  `@axe-core/playwright`) against each and fails on any serious/critical
-  violation.
-- Asserts the skip link, mobile nav toggle, and FAQ `<details>` accordion are
-  all keyboard-operable.
-
-**Acceptance criteria:**
-- [ ] `npm run test:e2e` (new script) runs Playwright against all three
-      routes above.
-- [ ] axe-core violations of severity "serious" or "critical" fail the test.
-- [ ] A new CI job runs this suite (can be a separate job from the existing
-      lint/typecheck/test/build job so it doesn't slow down the main one).
-- [ ] README's "Testing" section documents the new command.
-
----
+> **Done:** a Playwright + axe-core accessibility suite (run across every
+> theme preset), visual smoke screenshots, and a Lighthouse CI budget check
+> now exist — see the README's "Design system" → "Quality gates" section.
+> This used to be issue #1 here.
 
 ## 2. Support multiple locations in one config
 
@@ -150,7 +129,7 @@ motion, not fixing existing motion).
       `IntersectionObserver` + CSS classes.
 - [ ] Verified to no-op completely when `prefers-reduced-motion: reduce` is
       set (test manually via browser dev tools' emulation, or add this to
-      the Playwright suite from issue #1 once it exists).
+      the existing Playwright suite under `tests/e2e/`).
 - [ ] No layout shift or content that's inaccessible before JS loads (content
       must be visible/readable with JavaScript disabled).
 
@@ -197,3 +176,34 @@ unless the user confirms an overwrite.
       confirmation or writes to a different filename.
 - [ ] No new runtime dependency added to the site itself (a CLI-only
       devDependency like `prompts` or `@inquirer/prompts` is fine).
+
+---
+
+## 9. Design panel: drag-to-reorder sections, image upload, dark mode
+
+**Labels:** `enhancement`, `design-system`
+
+**Body:**
+The `/design` panel (see README's "Design system" section) covers preset,
+brand color, fonts, radius/shadow/motion/density, header/footer variant, and
+per-section enabled+variant — but a few adjacent, genuinely useful pieces are
+explicitly out of scope for now and listed here instead of being partially
+faked:
+- **Reordering**: sections render in a fixed kind-order in the panel; there's
+  no drag-and-drop to reorder the actual `sections[]` array. Today, reorder
+  by hand in `business.config.ts` (or via "Copy config" + manual reordering).
+- **Image upload**: the hero "split-image" variant reads `images.hero` (a
+  `public/` path string) from config; the panel has no upload/browse UI for
+  it, so previewing a real photo means adding the file to `public/` and
+  setting the path in `business.config.ts` first.
+- **Dark mode**: the token layer (`lib/theme/tokens.ts`) resolves one
+  light-mode palette; there's no `prefers-color-scheme: dark` variant or
+  panel toggle for one yet.
+
+**Acceptance criteria:**
+- [ ] Sections list in `DesignPanel.tsx` supports drag-and-drop reordering
+      that's reflected in both the live preview and the copied snippet.
+- [ ] A file input (or paste-a-URL field) in the panel lets you preview a
+      real hero image without hand-editing `business.config.ts` first.
+- [ ] A `theme.colorScheme` (`"light" | "dark" | "auto"`) config option,
+      resolved tokens for both modes, and a panel toggle to preview each.

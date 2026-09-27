@@ -1,6 +1,6 @@
 {
   "name": "localbiz-site",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "A Next.js + TypeScript + Tailwind CSS starter that turns one typed config file into a fast, SEO-ready website for a local business.",
@@ -12,7 +12,10 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "lhci": "lhci autorun --config=./lighthouserc.cjs"
   },
   "dependencies": {
     "next": "16.3.6",
@@ -21,6 +24,9 @@
     "zod": "4.6.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
