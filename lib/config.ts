@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { BUSINESS_TYPE_KEYS } from "./business-types";
 import { DAY_KEYS, type DayKey } from "./hours";
+import { layoutConfigSchema, sectionsConfigSchema } from "./sections/schema";
 import { themeConfigSchema } from "./theme/schema";
 import { resolveTheme } from "./theme/tokens";
 
@@ -112,6 +113,18 @@ export const businessConfigSchema = z
     bookingUrl: z.url().optional(),
     contactFormWebhookUrl: z.url().optional(),
     theme: themeConfigSchema,
+    /** Homepage body: which sections appear, in what order, and which
+     * professionally-designed variant each one renders. Omit entirely for
+     * a sensible default (see `lib/sections/schema.ts`'s `DEFAULT_SECTIONS`). */
+    sections: sectionsConfigSchema,
+    /** Header/nav and footer variant (these always render, so they're
+     * configured separately from the reorderable `sections` list above). */
+    layout: layoutConfigSchema,
+    /** Optional images for section variants that support them (e.g. the
+     * hero's "split-image" variant) — a path under `public/`, same as
+     * `logoPath`. Variants fall back to a tasteful token-driven placeholder
+     * when unset. */
+    images: z.object({ hero: z.string().min(1).optional() }).default({}),
     logoPath: z.string().min(1),
     siteUrl: z.url(),
   })

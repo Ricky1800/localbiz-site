@@ -182,6 +182,28 @@ const rawConfig = {
   theme: {
     preset: "trades-home-services",
   },
+
+  // Which homepage sections appear, in what order, and which professionally
+  // designed variant each one renders. Omit `sections` entirely to use the
+  // sensible default order (see `lib/sections/schema.ts`'s
+  // `DEFAULT_SECTIONS`) — it's spelled out here just to demonstrate mixing
+  // variants; every entry below except `hero`'s is in fact the default.
+  sections: [
+    { type: "hero", variant: "split-image" },
+    { type: "services", variant: "grid-cards" },
+    { type: "testimonials", variant: "grid-cards" },
+    { type: "serviceArea", variant: "pill-cloud" },
+    { type: "faq", variant: "accordion" },
+    { type: "ctaBand", variant: "simple" },
+  ],
+
+  // Header/nav and footer variant (these always render, so they live
+  // outside the reorderable `sections` list above).
+  layout: {
+    header: { variant: "standard" },
+    footer: { variant: "simple" },
+  },
+
   logoPath: "/logo.svg",
   siteUrl: "https://www.maplestreetplumbing.example",
 } satisfies Record<string, unknown>;

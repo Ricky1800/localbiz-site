@@ -25,3 +25,14 @@ export function mapsHref(address: BusinessConfig["address"]): string {
 export function formatAddress(address: BusinessConfig["address"]): string {
   return `${address.street}, ${address.city}, ${address.state} ${address.zip}`;
 }
+
+/** Formats a 24-hour "HH:mm" string as a 12-hour clock label, e.g. "09:00" -> "9 AM". */
+export function formatTimeOfDay(time: string): string {
+  const match = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(time);
+  if (!match) return time;
+  const hour24 = Number(match[1]);
+  const minute = match[2] as string;
+  const period = hour24 < 12 ? "AM" : "PM";
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return minute === "00" ? `${hour12} ${period}` : `${hour12}:${minute} ${period}`;
+}

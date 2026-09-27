@@ -4,8 +4,7 @@ import businessConfig from "@/business.config";
 import { buildLocalBusinessJsonLd } from "@/lib/schema-org";
 import { JsonLd } from "@/components/JsonLd";
 import { SkipLink } from "@/components/SkipLink";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { Header, Footer } from "@/components/sections";
 import { allFontVariableClassNames } from "@/lib/theme/fonts";
 import { resolveTheme, themeToCssVariables } from "@/lib/theme/tokens";
 import "./globals.css";
@@ -45,9 +44,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <JsonLd data={buildLocalBusinessJsonLd(businessConfig)} />
         <SkipLink />
-        <Header config={businessConfig} />
+        <Header config={businessConfig} variant={businessConfig.layout.header.variant} />
         <main id="main-content">{children}</main>
-        <Footer config={businessConfig} />
+        <Footer config={businessConfig} variant={businessConfig.layout.footer.variant} />
       </body>
     </html>
   );
