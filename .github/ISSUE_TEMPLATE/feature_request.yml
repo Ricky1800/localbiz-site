@@ -1,0 +1,35 @@
+name: Feature request
+description: Suggest an idea or enhancement for this template.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Who hits this, and when? (e.g. "business owners who want X in business.config.ts")
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would you change or add? Feel free to sketch a config shape or component API.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: scope-check
+    attributes:
+      label: Scope check
+      description: See CONTRIBUTING.md's "Scope guidelines" before opening a large feature PR.
+      options:
+        - label: This keeps the project backend-free (no required database/server/auth).
+        - label: This flows through business.config.ts rather than hardcoding business-specific data.
