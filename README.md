@@ -348,6 +348,9 @@ All of the above run in CI (`.github/workflows/ci.yml`'s `e2e` and
 - None of this requires an API key, a Search Console property, or any
   external service — it's all derived from `business.config.ts` at build/
   request time.
+  ### SEO & Indexing
+By default, the site allows all crawlers. To disable indexing (useful for staging environments), set the following environment variable:
+`NEXT_PUBLIC_ALLOW_INDEXING=false`
 
 ## Testing
 
