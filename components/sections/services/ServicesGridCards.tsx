@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Service } from "@/lib/config";
+import { AnimateIn } from "@/components/AnimateIn";
 
 /** A responsive card grid — one card per service, each linking to its own
  * statically-generated `/services/[slug]` page. */
@@ -10,9 +11,11 @@ export function ServicesGridCards({ services }: { services: Service[] }) {
       aria-labelledby="services-heading"
       className="section-y mx-auto max-w-6xl px-4 sm:px-6"
     >
-      <h2 id="services-heading" className="font-heading text-3xl font-bold text-fg">
-        Services
-      </h2>
+      <AnimateIn>
+        <h2 id="services-heading" className="font-heading text-3xl font-bold text-fg">
+          Services
+        </h2>
+      </AnimateIn>
       <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => (
           <li key={service.slug}>

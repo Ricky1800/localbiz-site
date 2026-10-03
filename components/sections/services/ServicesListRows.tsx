@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Service } from "@/lib/config";
+import { AnimateIn } from "@/components/AnimateIn";
 
 /** A numbered list of horizontal rows instead of a card grid — reads more
  * like a menu/price list, which suits businesses with a few, clearly
@@ -11,9 +12,11 @@ export function ServicesListRows({ services }: { services: Service[] }) {
       aria-labelledby="services-heading"
       className="section-y mx-auto max-w-4xl px-4 sm:px-6"
     >
-      <h2 id="services-heading" className="font-heading text-3xl font-bold text-fg">
-        Services
-      </h2>
+      <AnimateIn>
+        <h2 id="services-heading" className="font-heading text-3xl font-bold text-fg">
+          Services
+        </h2>
+      </AnimateIn>
       <ol className="mt-8 divide-y divide-border border-y border-border">
         {services.map((service, index) => (
           <li key={service.slug}>

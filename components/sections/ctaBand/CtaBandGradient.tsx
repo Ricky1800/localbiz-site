@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { BusinessConfig } from "@/lib/config";
 import { formatAddress, mapsHref, phoneHref } from "@/lib/format";
+import { AnimateIn } from "@/components/AnimateIn";
 
 /** A bold, full-bleed gradient band in the brand color — a higher-contrast,
  * more assertive closing CTA for businesses that want the last thing a
@@ -13,9 +14,11 @@ export function CtaBandGradient({ config }: { config: BusinessConfig }) {
       className="bg-gradient-to-br from-primary to-secondary"
     >
       <div className="section-y mx-auto max-w-3xl px-4 text-center sm:px-6">
-        <h2 id="contact-heading" className="font-heading text-3xl font-bold text-primary-foreground">
-          Ready when you are
-        </h2>
+        <AnimateIn>
+          <h2 id="contact-heading" className="font-heading text-3xl font-bold text-primary-foreground">
+            Ready when you are
+          </h2>
+        </AnimateIn>
         <p className="mt-4 text-base text-primary-foreground/85">
           {formatAddress(config.address)}
         </p>

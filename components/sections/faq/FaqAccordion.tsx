@@ -1,4 +1,5 @@
 import type { FaqItem } from "@/lib/config";
+import { AnimateIn } from "@/components/AnimateIn";
 
 /** A zero-JavaScript accordion built on native `<details>`/`<summary>` — fully
  * keyboard operable and works before hydration, with no client component
@@ -8,9 +9,11 @@ export function FaqAccordion({ faq }: { faq: FaqItem[] }) {
 
   return (
     <section id="faq" aria-labelledby="faq-heading" className="section-y mx-auto max-w-3xl px-4 sm:px-6">
-      <h2 id="faq-heading" className="font-heading text-3xl font-bold text-fg">
-        Frequently asked questions
-      </h2>
+      <AnimateIn>
+        <h2 id="faq-heading" className="font-heading text-3xl font-bold text-fg">
+          Frequently asked questions
+        </h2>
+      </AnimateIn>
       <div className="mt-8 divide-y divide-border border-t border-border">
         {faq.map((item, index) => (
           <details key={index} className="group py-4">
