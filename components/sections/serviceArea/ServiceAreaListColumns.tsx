@@ -1,3 +1,5 @@
+import { AnimateIn } from "@/components/AnimateIn";
+
 /** A multi-column list with a location-pin icon per town, inside a card —
  * reads more like a structured "coverage area" reference than a tag cloud. */
 export function ServiceAreaListColumns({ towns }: { towns: string[] }) {
@@ -8,9 +10,11 @@ export function ServiceAreaListColumns({ towns }: { towns: string[] }) {
       className="section-y mx-auto max-w-5xl px-4 sm:px-6"
     >
       <div className="rounded-xl border border-border bg-surface p-8 shadow-sm">
-        <h2 id="service-area-heading" className="font-heading text-3xl font-bold text-fg">
-          Proudly serving
-        </h2>
+        <AnimateIn>
+          <h2 id="service-area-heading" className="font-heading text-3xl font-bold text-fg">
+            Proudly serving
+          </h2>
+        </AnimateIn>
         <ul className="mt-6 grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-3 lg:grid-cols-4">
           {towns.map((town) => (
             <li key={town} className="flex items-center gap-2 text-sm text-fg-muted">

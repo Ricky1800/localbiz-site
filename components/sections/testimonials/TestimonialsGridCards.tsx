@@ -1,5 +1,6 @@
 import type { Testimonial } from "@/lib/config";
 import { Stars } from "./Stars";
+import { AnimateIn } from "@/components/AnimateIn";
 
 export function TestimonialsGridCards({ testimonials }: { testimonials: Testimonial[] }) {
   if (testimonials.length === 0) return null;
@@ -7,9 +8,11 @@ export function TestimonialsGridCards({ testimonials }: { testimonials: Testimon
   return (
     <section id="testimonials" aria-labelledby="testimonials-heading" className="bg-surface-2">
       <div className="section-y mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 id="testimonials-heading" className="font-heading text-3xl font-bold text-fg">
-          What our customers say
-        </h2>
+        <AnimateIn>
+          <h2 id="testimonials-heading" className="font-heading text-3xl font-bold text-fg">
+            What our customers say
+          </h2>
+        </AnimateIn>
         <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((testimonial, index) => (
             <li

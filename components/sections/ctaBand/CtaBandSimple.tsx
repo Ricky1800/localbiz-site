@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { BusinessConfig } from "@/lib/config";
 import { formatAddress, mapsHref, phoneHref } from "@/lib/format";
+import { AnimateIn } from "@/components/AnimateIn";
 
 /** A quiet, tinted band matching the page background family — the original
  * homepage closing section. */
@@ -8,9 +9,11 @@ export function CtaBandSimple({ config }: { config: BusinessConfig }) {
   return (
     <section id="contact" aria-labelledby="contact-heading" className="bg-primary/5">
       <div className="section-y mx-auto max-w-3xl px-4 text-center sm:px-6">
-        <h2 id="contact-heading" className="font-heading text-3xl font-bold text-fg">
-          Get in touch
-        </h2>
+        <AnimateIn>
+          <h2 id="contact-heading" className="font-heading text-3xl font-bold text-fg">
+            Get in touch
+          </h2>
+        </AnimateIn>
         <p className="mt-4 text-base text-fg-muted">{formatAddress(config.address)}</p>
         <div className="mt-8 flex flex-wrap justify-center gap-4">
           <a

@@ -1,6 +1,7 @@
 import type { BusinessConfig } from "@/lib/config";
 import { formatAddress, formatTimeOfDay, mailHref, mapsHref, phoneHref } from "@/lib/format";
 import { HoursWidget } from "@/components/HoursWidget";
+import { AnimateIn } from "@/components/AnimateIn";
 
 const DAY_LABELS: Record<string, string> = {
   mon: "Monday",
@@ -22,9 +23,11 @@ export function HoursContactCard({ config }: { config: BusinessConfig }) {
       aria-labelledby="hours-contact-heading"
       className="section-y mx-auto max-w-5xl px-4 sm:px-6"
     >
-      <h2 id="hours-contact-heading" className="font-heading text-3xl font-bold text-fg">
-        Hours &amp; contact
-      </h2>
+      <AnimateIn>
+        <h2 id="hours-contact-heading" className="font-heading text-3xl font-bold text-fg">
+          Hours &amp; contact
+        </h2>
+      </AnimateIn>
 
       <div className="mt-8 grid gap-8 rounded-xl border border-border bg-surface p-8 shadow-sm sm:grid-cols-2">
         <div>
