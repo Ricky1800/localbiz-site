@@ -15,6 +15,7 @@ export const SECTION_VARIANTS = {
   hoursContact: ["card", "banner"],
   ctaBand: ["simple", "gradient"],
   faq: ["accordion", "two-column"],
+  gallery: ["grid"],
 } as const;
 
 export type SectionKind = keyof typeof SECTION_VARIANTS;
@@ -51,6 +52,10 @@ const faqSectionSchema = z.object({
   type: z.literal("faq"),
   variant: z.enum(SECTION_VARIANTS.faq).default("accordion"),
 });
+const gallerySectionSchema = z.object({
+  type: z.literal("gallery"),
+  variant: z.enum(SECTION_VARIANTS.gallery).default("grid"),
+});
 
 export const sectionEntrySchema = z.discriminatedUnion("type", [
   heroSectionSchema,
@@ -60,6 +65,7 @@ export const sectionEntrySchema = z.discriminatedUnion("type", [
   hoursContactSectionSchema,
   ctaBandSectionSchema,
   faqSectionSchema,
+  gallerySectionSchema,
 ]);
 
 export type SectionEntry = z.infer<typeof sectionEntrySchema>;

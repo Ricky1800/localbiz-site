@@ -7,6 +7,7 @@ import { ServiceAreaSection } from "./serviceArea";
 import { HoursContactSection } from "./hoursContact";
 import { CtaBandSection } from "./ctaBand";
 import { FaqSection } from "./faq";
+import { GallerySection } from "./gallery";
 
 export { Header } from "./header";
 export { Footer } from "./footer";
@@ -39,6 +40,8 @@ export function RenderSection({
       return <CtaBandSection config={config} variant={entry.variant} />;
     case "faq":
       return <FaqSection faq={config.faq} variant={entry.variant} />;
+    case "gallery":
+      return <GallerySection gallery={config.gallery} variant={entry.variant} />;
     default: {
       const exhaustiveCheck: never = entry;
       return exhaustiveCheck;
