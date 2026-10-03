@@ -122,6 +122,27 @@ describe("businessConfigSchema", () => {
     };
     expect(() => parseBusinessConfig(config)).toThrow(/theme/i);
   });
+
+  it("accepts valid optional gallery configuration", () => {
+    const config = baseValidConfig();
+    (config as Record<string, unknown>).gallery = [
+      { src: "/images/job-1.jpg", alt: "Completed pipe installation" },
+      { src: "/images/job-2.jpg", alt: "Commercial drain cleaning work" },
+    ];
+    const parsed = businessConfigSchema.parse(config);
+    expect(parsed.gallery).toHaveLength(2);
+    expect(parsed.gallery?.[0]?.alt).toBe("Completed pipe installation");
+  });
+
+  it("rejects gallery items with missing or empty alt text", () => {
+    const config = baseValidConfig();
+    (config as Record<string, unknown>).gallery = [
+      { src: "/images/job-1.jpg", alt: "" },
+    ];
+    const result = businessConfigSchema.safeParse(config);
+    expect(result.success).toBe(false);
+  });
+
 });
 
 describe("the example business.config.ts", () => {

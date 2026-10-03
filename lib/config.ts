@@ -69,6 +69,11 @@ const faqSchema = z.object({
   answer: z.string().min(1),
 });
 
+const galleryItemSchema = z.object({
+  src: z.string().min(1),
+  alt: z.string().min(1, "alt text is required for accessibility"),
+});
+
 const socialLinksSchema = z.object({
   facebook: z.url().optional(),
   instagram: z.url().optional(),
@@ -109,6 +114,7 @@ export const businessConfigSchema = z
     serviceAreas: z.array(z.string().min(1)).min(1, "at least one service area town is required"),
     testimonials: z.array(testimonialSchema).default([]),
     faq: z.array(faqSchema).default([]),
+    gallery: z.array(galleryItemSchema).optional(),
     social: socialLinksSchema.default({}),
     bookingUrl: z.url().optional(),
     contactFormWebhookUrl: z.url().optional(),
@@ -183,6 +189,7 @@ export type BusinessConfig = z.infer<typeof businessConfigSchema>;
 export type Service = BusinessConfig["services"][number];
 export type Testimonial = BusinessConfig["testimonials"][number];
 export type FaqItem = BusinessConfig["faq"][number];
+export type GalleryItem = NonNullable<BusinessConfig["gallery"]>[number];
 
 /**
  * Validates a raw business config object, throwing a readable
