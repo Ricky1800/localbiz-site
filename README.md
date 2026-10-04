@@ -344,7 +344,10 @@ All of the above run in CI (`.github/workflows/ci.yml`'s `e2e` and
 - **Metadata**: every page sets a title (via the root template in
   `app/layout.tsx`), description, canonical URL, and OpenGraph/Twitter tags.
 - **`app/sitemap.ts`** enumerates the homepage, `/contact`, and every service
-  page. **`app/robots.ts`** allows all crawling and points at the sitemap.
+  page. **`app/robots.ts`** points at the sitemap and allows all crawling by default.
+  To prevent search engines from indexing staging or preview deployments (e.g. Vercel
+  preview URLs), set the environment variable `NEXT_PUBLIC_ALLOW_INDEXING=false`,
+  which outputs `Disallow: /` for all user agents.
 - None of this requires an API key, a Search Console property, or any
   external service — it's all derived from `business.config.ts` at build/
   request time.
