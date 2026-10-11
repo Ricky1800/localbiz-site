@@ -349,6 +349,26 @@ All of the above run in CI (`.github/workflows/ci.yml`'s `e2e` and
   external service — it's all derived from `business.config.ts` at build/
   request time.
 
+## x402 bot paywall
+
+Humans browse free. Known AI crawlers and scrapers (GPTBot, ClaudeBot,
+CCBot, PerplexityBot, `curl`, `python-requests`, …) get an HTTP `402` with
+[x402](https://x402.org) payment requirements ($0.001 USDC per request on
+Base); if they pay, the page is served normally with an x402 settlement
+header. Search engines and link-preview bots (Googlebot, Bingbot,
+facebookexternalhit, Slackbot, …) and uptime monitors are never charged.
+
+- Logic: `lib/x402-bot-paywall.ts` (`BOT_UA_PATTERNS`), wired in `middleware.ts`.
+- Always free: `/robots.txt`, `/sitemap*.xml`, `/favicon*`, `/llms.txt`,
+  `/.well-known/*`, `/api/*`, and static assets.
+- Fails open: if the facilitator is down or anything throws, the page is served.
+- Config (see `.env.example`): `X402_ENABLED=false` turns it off;
+  `X402_PAY_TO`, `X402_PRICE`, `X402_NETWORK` override the defaults. Set
+  `CDP_API_KEY_ID` + `CDP_API_KEY_SECRET` to use the Coinbase CDP facilitator
+  (needed for Base mainnet); otherwise `X402_FACILITATOR_URL`
+  (default `https://x402.org/facilitator`, which only supports testnets, so
+  without CDP keys the paywall effectively fails open on mainnet).
+
 ## Testing
 
 - **Unit tests** ([Vitest](https://vitest.dev), `lib/**/*.test.ts`): pure
